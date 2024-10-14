@@ -30,24 +30,30 @@ const SignUpCard = ({ setState }: SignUpCardProps) => {
         <form action="#" className="space-y-2.5">
           <Input
             disabled={false}
-            value=""
-            onChange={() => {}}
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
             placeholder="Email"
             type="email"
             required
           />
           <Input
             disabled={false}
-            value=""
-            onChange={() => {}}
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
             placeholder="password"
             type="password"
             required
           />
           <Input
             disabled={false}
-            value=""
-            onChange={() => {}}
+            value={confirmPassword}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+            }}
             placeholder="confirm password"
             type="password"
             required
