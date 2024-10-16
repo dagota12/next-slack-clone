@@ -12,13 +12,43 @@ import React, { useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { SignInFlow } from "../types";
-
+import { useAuthActions } from "@convex-dev/auth/react";
+import { TriangleAlert } from "lucide-react";
+import { useRouter } from "next/navigation";
 interface SignInCardProps {
   setState: (state: SignInFlow) => void;
 }
 const SignInCard = ({ setState }: SignInCardProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
+  const { signIn } = useAuthActions();
+  //signin with providers
+  const handleProviderSignin = async (provider: string) => {
+    console.log("signin", provider);
+    setPending(true);
+    await signIn(provider).finally(() => setPending(false));
+  };
+  const onPassowordSignin = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPending(true);
+    signIn("password", {
+      email,
+      password,
+      flow: "signIn",
+      redirect: "/",
+      redirectTo: "/",
+    })
+      .then(() => {
+        router.push("/");
+      })
+      .catch((e) => {
+        setError("invalid username or password!");
+      })
+      .finally(() => setPending(false));
+  };
 
   return (
     <Card className="w-full h-full p-6 md:p-8">
@@ -26,8 +56,14 @@ const SignInCard = ({ setState }: SignInCardProps) => {
         <CardTitle>Sign in</CardTitle>
         <CardDescription>Sign in to your account</CardDescription>
       </CardHeader>
+      {!!error && (
+        <div className="bg-destructive/15 flex items-center gap-x-2 p-3 rounded-3 text-sm text-destructive mb-6">
+          <TriangleAlert className="size-4" />
+          <p>{error}</p>
+        </div>
+      )}
       <CardContent className="p-3 md:p-6">
-        <form action="#" className="space-y-2.5">
+        <form action="#" className="space-y-2.5" onSubmit={onPassowordSignin}>
           <Input
             disabled={false}
             value={email}
@@ -48,15 +84,17 @@ const SignInCard = ({ setState }: SignInCardProps) => {
             type="password"
             required
           />
-          <Button type="submit" className="w-full" size="lg" disabled={false}>
+          <Button type="submit" className="w-full" size="lg" disabled={pending}>
             continue
           </Button>
         </form>
         <Separator />
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-3 mt-2">
           <Button
-            disabled={false}
-            onClick={() => {}}
+            disabled={pending}
+            onClick={() => {
+              handleProviderSignin("google");
+            }}
             variant="outline"
             size="lg"
             className="w-full relative"
@@ -65,8 +103,10 @@ const SignInCard = ({ setState }: SignInCardProps) => {
             continue with google
           </Button>
           <Button
-            disabled={false}
-            onClick={() => {}}
+            disabled={pending}
+            onClick={() => {
+              handleProviderSignin("github");
+            }}
             variant="outline"
             size="lg"
             className="w-full relative"
