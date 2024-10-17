@@ -37,7 +37,7 @@ const WorkspacesSwitcher = () => {
           {workspaceLoading ? (
             <Loader className="size-5 animate-spin shrink-0" />
           ) : (
-            workspace?.name[0].toUpperCase()
+            workspace?.name.charAt(0).toUpperCase()
           )}
         </Button>
       </DropdownMenuTrigger>
@@ -58,7 +58,7 @@ const WorkspacesSwitcher = () => {
             onClick={() => router.push(`/workspace/${workspace._id}`)}
           >
             <div className="size-9 relaive overflow-hidden bg-[#616061] text-white text-lg rounded-md flex items-center justify-center mr-2">
-              {workspace.name[0].toUpperCase()}
+              {workspace?.name[0].toUpperCase()}
             </div>
             <p className="truncate">{workspace.name}</p>
           </DropdownMenuItem>
