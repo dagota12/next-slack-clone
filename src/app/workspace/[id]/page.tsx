@@ -12,6 +12,6 @@ interface WorkspaceProps {
 const Workspaces = () => {
   const workspaceId = useWorkspaceId();
   const { data, loading } = useGetWorkspace({ id: workspaceId });
-  return <div>Workspaces {JSON.stringify(data)}</div>;
+  return <div>Workspace</div>;
 };
 export default Workspaces;

@@ -11,7 +11,7 @@ import { useGetWorkspace } from "@/features/workspaces/api/useGetWorkspace";
 import { useGetWorkspaces } from "@/features/workspaces/api/useGetWorkSpaces";
 import { useCreateWorkspaceModal } from "@/features/workspaces/store/useCreateWorkspaceModal";
 import { useWorkspaceId } from "@/hooks/useWorkspaceId";
-import { Loader } from "lucide-react";
+import { Loader, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -30,13 +30,9 @@ const WorkspacesSwitcher = () => {
 
   const [_open, setOpen] = useCreateWorkspaceModal();
 
-  useEffect(() => {
-    setMounted(true);
-  });
-  if (!mounted) return;
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="outline-none">
+      <DropdownMenuTrigger className="outline-none" asChild>
         <Button className="size-9 overflow-hidden bg-[#ABABAD] hover:bg-[#ABABAD]/80 text-slate-800 text-lx ">
           {workspaceLoading ? (
             <Loader className="size-5 animate-spin shrink-0" />
@@ -51,10 +47,31 @@ const WorkspacesSwitcher = () => {
           onClick={() => router.push(`/workspace/${workspaceId}`)}
         >
           {workspace?.name}
-
           <span className="text-muted-foreground text-xs">
             active workspace
           </span>
+        </DropdownMenuItem>
+        {filterdWorkspaces?.map((workspace) => (
+          <DropdownMenuItem
+            key={workspace._id}
+            className="cursor-pointer capitalize overflow-hidden"
+            onClick={() => router.push(`/workspace/${workspace._id}`)}
+          >
+            <div className="size-9 relaive overflow-hidden bg-[#616061] text-white text-lg rounded-md flex items-center justify-center mr-2">
+              {workspace.name[0].toUpperCase()}
+            </div>
+            <p className="truncate">{workspace.name}</p>
+          </DropdownMenuItem>
+        ))}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => setOpen(true)}
+        >
+          <div className="size-9 relaive overflow-hidden bg-[#F2F2F2] text-slate-800 text-lg rounded-md flex items-center justify-center mr-2">
+            <Plus />
+          </div>
+          create new workspace
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

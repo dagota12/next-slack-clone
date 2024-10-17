@@ -29,7 +29,7 @@ export default function UserButton() {
     }
   };
   if (loading) {
-    return <LoaderCircle />;
+    return <LoaderCircle className="animate-spin shrink-0" />;
   }
   if (!data) {
     return null;

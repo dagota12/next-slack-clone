@@ -16,7 +16,7 @@ const Toolbar = () => {
           className="bg-accent/25 hover:bg-accent/25 w-full justify-start h-7 px-2"
         >
           <Search className="size-4 text-white mr-2" />
-          <span className="text-white text-xs">
+          <span className="text-white text-xs truncate w-32">
             Search {loading ? "loading..." : data?.name}
           </span>
         </Button>
