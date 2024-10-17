@@ -18,6 +18,16 @@ export default function UserButton() {
   const { signOut } = useAuthActions();
   const router = useRouter();
 
+  const handleLogout = async () => {
+    try {
+      await signOut(); // Sign out the user
+      // Redirect to the login page immediately
+    } catch (error) {
+      console.error("Failed to log out", error); // Handle errors if signOut fails
+    } finally {
+      router.push("/auth");
+    }
+  };
   if (loading) {
     return <LoaderCircle />;
   }
@@ -37,12 +47,7 @@ export default function UserButton() {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem
-          onClick={async () => {
-            await signOut();
-            router.push("/auth");
-          }}
-        >
+        <DropdownMenuItem onClick={handleLogout}>
           <LogOut className="size-4  mr-2" />
           Logout
         </DropdownMenuItem>
