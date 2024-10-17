@@ -18,6 +18,7 @@ export default function Home() {
     if (loading) return;
     if (workspaceId) {
       console.log("redirect to workspace");
+      router.replace(`/workspace/${workspaceId}`);
     } else if (!open) {
       setOpen(true);
     } else {

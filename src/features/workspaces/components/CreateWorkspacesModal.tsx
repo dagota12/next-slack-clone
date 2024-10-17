@@ -11,21 +11,32 @@ import { useCreateWorkspaceModal } from "../store/useCreateWorkspaceModal";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useCreateWorkspace } from "../api/useCreateWorkspaces";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export const CreateWorspaceModal = () => {
   const [open, setOpen] = useCreateWorkspaceModal();
+  const [name, setName] = useState("");
+  const router = useRouter();
 
-  const { mutate } = useCreateWorkspace();
+  const { mutate, pending } = useCreateWorkspace();
   const handleClose = () => {
     setOpen(false);
     // clear form
+    setName("");
   };
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     mutate(
-      { name: "workspace 1" },
+      { name },
       {
-        onSuccess() {
+        onSuccess(id) {
+          console.log(id);
           //redirect ot workspace
+          toast.success("workspace created!");
+          handleClose();
+          router.push(`/workspace/${id}`);
         },
         onError() {
           // show error
@@ -45,16 +56,22 @@ export const CreateWorspaceModal = () => {
             create your workspaces and invite your team
           </DialogDescription>
         </DialogHeader>
-        <form>
+        <form onSubmit={handleSubmit}>
           <Input
-            disabled={false}
+            disabled={pending}
             required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             autoFocus
             minLength={3}
             placeholder="workspace name e.g. 'we can do this all day','Chi'"
           />
+          <div className="w-full flex justify-end mt-3">
+            <Button type="submit" disabled={pending}>
+              create
+            </Button>
+          </div>
         </form>
-        <Button type="submit">create</Button>
       </DialogContent>
     </Dialog>
   );
