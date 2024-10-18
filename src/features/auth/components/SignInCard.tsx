@@ -45,7 +45,7 @@ const SignInCard = ({ setState }: SignInCardProps) => {
         router.push("/");
       })
       .catch((e) => {
-        setError("invalid username or password!");
+        setError("Faild to login!");
       })
       .finally(() => setPending(false));
   };
