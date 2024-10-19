@@ -8,18 +8,9 @@ interface GetWorkspaceProps {
 }
 
 export const useGetWorkspace = ({ id }: GetWorkspaceProps) => {
-  const [error, setError] = useState<string | null>(null);
   const data = useQuery(api.workspaces.getById, { id });
 
   const loading = data === undefined;
 
-  useEffect(() => {
-    if (!loading && !data) {
-      setError("Failed to fetch workspace data.");
-    } else {
-      setError(null); // Clear any previous errors when new data arrives
-    }
-  }, [data, loading]);
-
-  return { data, loading, error };
+  return { data, loading };
 };

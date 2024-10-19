@@ -16,6 +16,7 @@ const WorkspaceSidebar = () => {
     return (
       <div className="flex flex-col bg-[#5e2c5f] h-full items-center justify-center">
         <Loader className="animate-spin size-5 text-white" />
+        {memberLoading && "menber loading"} {workspaceLoading.valueOf()}
       </div>
     );
   }
@@ -23,7 +24,7 @@ const WorkspaceSidebar = () => {
     return (
       <div className="flex flex-col bg-[#a35496] h-full items-center justify-center">
         <AlertCircle className="size-5 text-red-300" />
-        <p className=" text-white">Something went wrong!</p>
+        <p className=" text-white">Workspace not found!</p>
       </div>
     );
   }
