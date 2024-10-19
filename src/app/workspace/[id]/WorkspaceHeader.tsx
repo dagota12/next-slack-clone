@@ -8,11 +8,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Doc } from "../../../../convex/_generated/dataModel";
-import { ChevronDownIcon } from "lucide-react";
+import {
+  ChevronDownIcon,
+  FilterIcon,
+  ListFilter,
+  SquarePen,
+} from "lucide-react";
+import { Hint } from "@/components/Hint";
 interface WorkSpaceHeaderProps {
   workspace: Doc<"workspaces">;
+  isAdmin: boolean;
 }
-const WorkspaceHeader = ({ workspace }: WorkSpaceHeaderProps) => {
+const WorkspaceHeader = ({ workspace, isAdmin }: WorkSpaceHeaderProps) => {
   return (
     <div className="flex items-center justify-between h-[49px] px-2 gap-0.5 ">
       <DropdownMenu>
@@ -36,8 +43,33 @@ const WorkspaceHeader = ({ workspace }: WorkSpaceHeaderProps) => {
               <p className="text-muted-foreground text-sm">Active workspace</p>
             </div>
           </DropdownMenuItem>
+          {isAdmin && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="cursor-pointer" onClick={() => {}}>
+                Invite your team to &nbsp;{" "}
+                <span className="font-semibold">{workspace.name}</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="cursor-pointer" onClick={() => {}}>
+                Preferences
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
+      <div className="flex items-center gap-1.5">
+        <Hint label="New conversation" align="end" side="bottom">
+          <Button variant="transparent" size="iconSm">
+            <SquarePen className="size-5 text-white" />
+          </Button>
+        </Hint>
+        <Hint label="Filter" align="end" side="bottom">
+          <Button variant="transparent" size="iconSm">
+            <ListFilter className="size-5 text-white" />
+          </Button>
+        </Hint>
+      </div>
     </div>
   );
 };
