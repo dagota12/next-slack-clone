@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useRemoveWorkspace } from "@/features/workspaces/api/useRemoveWorkspace";
 import { useUpdateWorkspace } from "@/features/workspaces/api/useUpdateWorkspace";
+import { useConfirm } from "@/hooks/useConfirm";
 import { useWorkspaceId } from "@/hooks/useWorkspaceId";
 import { TrashIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -38,6 +39,11 @@ export const PreferencesModal = ({
   const { mutate: removeWorkspace, pending: removingWorkspace } =
     useRemoveWorkspace();
 
+  const [ConfirmDialog, confirm] = useConfirm(
+    "Are you sure",
+    "this opreation can not be undone"
+  );
+
   const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     updateWorkspace(
@@ -46,7 +52,6 @@ export const PreferencesModal = ({
         onSuccess: () => {
           setEdit(false);
           toast.success("Workspace updated");
-          router.replace("/");
         },
         onError: () => {
           toast.error("Failed to update workspace");
@@ -54,12 +59,17 @@ export const PreferencesModal = ({
       }
     );
   };
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    const ok = await confirm();
+
+    if (!ok) return;
+
     removeWorkspace(
       { id: workspaceId },
       {
         onSuccess: () => {
           toast.success("Workspace deleted");
+          router.replace("/");
         },
         onError: (err) => {
           toast.error("faild to delete!");
@@ -69,68 +79,71 @@ export const PreferencesModal = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="p-0 bg-green-50 overflow-hidden">
-        <DialogHeader className="p-4 border-b bg-white rounded-lg">
-          <DialogTitle>{initialVal}</DialogTitle>
-          <DialogDescription>Change your preferences</DialogDescription>
-        </DialogHeader>
-        <div className="flex flex-col gap-y-2">
-          <Dialog open={edit} onOpenChange={setEdit}>
-            <DialogTrigger asChild>
-              <div className="px-5 py-4 bg-white border cursor-pointer hover:bg-gray-50 rounded-lg">
-                <div className="flex items-center justify-between">
-                  <p className=" text-sm">workspace name</p>
-                  <p className="text-sm text-sky-500 hover:underline cursor-pointer">
-                    edit
-                  </p>
+    <>
+      <ConfirmDialog />
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="p-0 bg-green-50 overflow-hidden">
+          <DialogHeader className="p-4 border-b bg-white rounded-lg">
+            <DialogTitle>{initialVal}</DialogTitle>
+            <DialogDescription>Change your preferences</DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-y-2">
+            <Dialog open={edit} onOpenChange={setEdit}>
+              <DialogTrigger asChild>
+                <div className="px-5 py-4 bg-white border cursor-pointer hover:bg-gray-50 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <p className=" text-sm">workspace name</p>
+                    <p className="text-sm text-sky-500 hover:underline cursor-pointer">
+                      edit
+                    </p>
+                  </div>
+                  <p className="font-semibold text-sm">{initialVal}</p>
                 </div>
-                <p className="font-semibold text-sm">{initialVal}</p>
-              </div>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Edit workspace name</DialogTitle>
-              </DialogHeader>
-              <form className="space-y-4" onSubmit={handleEdit}>
-                <Input
-                  disabled={workspaceUpdating}
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                  required
-                  autoFocus
-                  minLength={3}
-                  maxLength={30}
-                  placeholder="workspace name e.g. 'Gumball','Creator'"
-                />
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline" disabled={workspaceUpdating}>
-                      cancle
-                    </Button>
-                  </DialogClose>
-                  <Button
-                    variant="default"
-                    type="submit"
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Edit workspace name</DialogTitle>
+                </DialogHeader>
+                <form className="space-y-4" onSubmit={handleEdit}>
+                  <Input
                     disabled={workspaceUpdating}
-                  >
-                    save
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    required
+                    autoFocus
+                    minLength={3}
+                    maxLength={30}
+                    placeholder="workspace name e.g. 'Gumball','Creator'"
+                  />
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline" disabled={workspaceUpdating}>
+                        cancle
+                      </Button>
+                    </DialogClose>
+                    <Button
+                      variant="default"
+                      type="submit"
+                      disabled={workspaceUpdating}
+                    >
+                      save
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
 
-          <button
-            disabled={removingWorkspace}
-            onClick={handleDelete}
-            className="flex gap-x-2 px-5 py-4 bg-white rounded-lg border cursor-pointero hover:bg-gray-50 text-rose-600"
-          >
-            <TrashIcon className="size-4" />
-            <p className="text-sm font-semibold">Delete workspace</p>
-          </button>
-        </div>
-      </DialogContent>
-    </Dialog>
+            <button
+              disabled={removingWorkspace}
+              onClick={handleDelete}
+              className="flex gap-x-2 px-5 py-4 bg-white rounded-lg border cursor-pointero hover:bg-gray-50 text-rose-600"
+            >
+              <TrashIcon className="size-4" />
+              <p className="text-sm font-semibold">Delete workspace</p>
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
