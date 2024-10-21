@@ -9,9 +9,11 @@ import { FaHashtag } from "react-icons/fa";
 import { WorkspaceSection } from "./workspaceSection";
 import { useGetMembers } from "@/features/members/api/useGetMembers";
 import { UserItem } from "./UserItem";
+import { useCreateChannelModal } from "@/features/channels/store/useCreateChannelModal";
 
 const WorkspaceSidebar = () => {
   const workspaceId = useWorkspaceId();
+  const [_open, setOpen] = useCreateChannelModal();
   const { data: member, loading: memberLoading } = useCurrentMember({
     workspaceId,
   });
@@ -53,7 +55,11 @@ const WorkspaceSidebar = () => {
           variant="active"
         />
       </div>
-      <WorkspaceSection label="Channels" hint="New Channel" onNew={() => {}}>
+      <WorkspaceSection
+        label="Channels"
+        hint="New Channel"
+        onNew={member.role === "admin" ? () => setOpen(true) : undefined}
+      >
         {channels?.map((value) => (
           <SidebarItem
             key={value._id}
@@ -63,14 +69,17 @@ const WorkspaceSidebar = () => {
           />
         ))}
       </WorkspaceSection>
-      {members?.map((item) => (
-        <UserItem
-          key={item._id}
-          id={item._id}
-          label={item.user.name}
-          image={item.user.image}
-        />
-      ))}
+
+      <WorkspaceSection label="Direct Messages" hint="New DM" onNew={() => {}}>
+        {members?.map((item) => (
+          <UserItem
+            key={item._id}
+            id={item._id}
+            label={item.user.name}
+            image={item.user.image}
+          />
+        ))}
+      </WorkspaceSection>
     </div>
   );
 };
