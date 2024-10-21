@@ -4,6 +4,11 @@ import { useWorkspaceId } from "@/hooks/useWorkspaceId";
 import { AlertCircle, Loader, MessageSquare } from "lucide-react";
 import WorkspaceHeader from "./WorkspaceHeader";
 import SidebarItem from "./SidebarItem";
+import { useGetChannels } from "@/features/channels/api/useGetChannels";
+import { FaHashtag } from "react-icons/fa";
+import { WorkspaceSection } from "./workspaceSection";
+import { useGetMembers } from "@/features/members/api/useGetMembers";
+import { UserItem } from "./UserItem";
 
 const WorkspaceSidebar = () => {
   const workspaceId = useWorkspaceId();
@@ -12,6 +17,12 @@ const WorkspaceSidebar = () => {
   });
   const { data: workspace, loading: workspaceLoading } = useGetWorkspace({
     id: workspaceId,
+  });
+  const { data: channels, loading: channelsLoading } = useGetChannels({
+    workspaceId,
+  });
+  const { data: members, loading: membersLoading } = useGetMembers({
+    workspaceId,
   });
   if (memberLoading || workspaceLoading) {
     return (
@@ -42,6 +53,24 @@ const WorkspaceSidebar = () => {
           variant="active"
         />
       </div>
+      <WorkspaceSection label="Channels" hint="New Channel" onNew={() => {}}>
+        {channels?.map((value) => (
+          <SidebarItem
+            key={value._id}
+            label={value.name}
+            Icon={FaHashtag}
+            id={value._id}
+          />
+        ))}
+      </WorkspaceSection>
+      {members?.map((item) => (
+        <UserItem
+          key={item._id}
+          id={item._id}
+          label={item.user.name}
+          image={item.user.image}
+        />
+      ))}
     </div>
   );
 };
