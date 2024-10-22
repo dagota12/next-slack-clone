@@ -154,6 +154,7 @@ export const newJoinCode = mutation({
     return args.workspaceId;
   },
 });
+//for users to join other workspaces
 export const join = mutation({
   args: {
     joinCode: v.string(),
@@ -186,5 +187,33 @@ export const join = mutation({
       role: "member",
     });
     return args.workspaceId;
+  },
+});
+
+//public workspace info for all signed upusers
+export const getInfoById = query({
+  args: { id: v.id("workspaces") },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      return null;
+    }
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", args.id).eq("userId", userId)
+      )
+      .unique();
+
+    const workspace = await ctx.db.get(args.id);
+
+    if (!workspace) {
+      return null;
+    }
+
+    return {
+      name: workspace.name,
+      isMember: !!member,
+    };
   },
 });
