@@ -53,7 +53,7 @@ export const InviteModal = ({
     );
   };
   const handleCopy = () => {
-    const inviteLink = `${window.location.origin}/workspace/${workspaceId}`;
+    const inviteLink = `${window.location.origin}/join/${workspaceId}`;
     navigator.clipboard.writeText(inviteLink).then(() => {
       toast.success("link coppied");
     });
