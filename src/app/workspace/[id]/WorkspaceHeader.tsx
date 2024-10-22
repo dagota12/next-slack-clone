@@ -17,14 +17,22 @@ import {
 import { Hint } from "@/components/Hint";
 import { PreferencesModal } from "./PreferencesModal";
 import { useState } from "react";
+import { InviteModal } from "./InviteModal";
 interface WorkSpaceHeaderProps {
   workspace: Doc<"workspaces">;
   isAdmin: boolean;
 }
 const WorkspaceHeader = ({ workspace, isAdmin }: WorkSpaceHeaderProps) => {
   const [preferenceOpen, setPreferenceOpen] = useState(false);
+  const [inviteOpen, setinviteOpen] = useState(false);
   return (
     <>
+      <InviteModal
+        open={inviteOpen}
+        setOpen={setinviteOpen}
+        name={workspace?.name}
+        joinCode={workspace?.joinCode}
+      />
       <PreferencesModal
         open={preferenceOpen}
         setOpen={setPreferenceOpen}
@@ -57,7 +65,10 @@ const WorkspaceHeader = ({ workspace, isAdmin }: WorkSpaceHeaderProps) => {
             {isAdmin && (
               <>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer" onClick={() => {}}>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => setinviteOpen(true)}
+                >
                   Invite your team to &nbsp;{" "}
                   <span className="font-semibold">{workspace.name}</span>
                 </DropdownMenuItem>
