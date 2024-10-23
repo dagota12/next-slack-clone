@@ -10,8 +10,10 @@ import { WorkspaceSection } from "./workspaceSection";
 import { useGetMembers } from "@/features/members/api/useGetMembers";
 import { UserItem } from "./UserItem";
 import { useCreateChannelModal } from "@/features/channels/store/useCreateChannelModal";
+import { useChannelId } from "@/hooks/useChannelId";
 
 const WorkspaceSidebar = () => {
+  const channelId = useChannelId();
   const workspaceId = useWorkspaceId();
   const [_open, setOpen] = useCreateChannelModal();
   const { data: member, loading: memberLoading } = useCurrentMember({
@@ -48,12 +50,7 @@ const WorkspaceSidebar = () => {
         isAdmin={member.role === "admin"}
       />
       <div className="flex flex-col px-2 mt-3">
-        <SidebarItem
-          label="Messages"
-          Icon={MessageSquare}
-          id="threads"
-          variant="active"
-        />
+        <SidebarItem label="Messages" Icon={MessageSquare} id="threads" />
       </div>
       <WorkspaceSection
         label="Channels"
@@ -66,6 +63,7 @@ const WorkspaceSidebar = () => {
             label={value.name}
             Icon={FaHashtag}
             id={value._id}
+            variant={channelId === value._id ? "active" : "default"}
           />
         ))}
       </WorkspaceSection>
