@@ -10,9 +10,11 @@ import "quill/dist/quill.snow.css";
 import { PiTextAa } from "react-icons/pi";
 import { MdSend } from "react-icons/md";
 import { Button } from "./ui/button";
-import { ImageIcon, SmileIcon } from "lucide-react";
+import { ImageIcon, SmileIcon, XIcon } from "lucide-react";
 import { Hint } from "./Hint";
 import { Delta, Op } from "quill/core";
+import { EmojiPopover } from "./EmojiPopover";
+import Image from "next/image";
 
 type EditorValue = {
   image: File | null;
@@ -39,7 +41,9 @@ const Editor = ({
 }: EditorProps) => {
   const [text, setText] = useState("");
   const [toolbarVisible, setToolbarVisible] = useState(true);
+  const [image, setImage] = useState<File | null>(null);
 
+  const imageElementRef = useRef<HTMLInputElement | null>(null); // image selector
   const containerRef = useRef<HTMLDivElement>(null);
   const submitRef = useRef(onSubmit);
   const placeholderRef = useRef(placeholder);
@@ -47,6 +51,7 @@ const Editor = ({
   const defaultValueRef = useRef<Delta | Op[]>(defaultValue);
   const disabledRef = useRef(disabled);
 
+  //show or hide text formatting toolbar
   const handleToolbarToggle = () => {
     setToolbarVisible((prev) => !prev);
     const toolbarElem = containerRef.current?.querySelector(".ql-toolbar");
@@ -54,20 +59,37 @@ const Editor = ({
       toolbarElem.classList.toggle("hidden");
     }
   };
+  //on emoji select
+  const onEmojiSelect = (emoji: any) => {
+    const quill = quillRef.current;
+    quill?.insertText(quill?.getSelection()?.index || 0, emoji.native);
+  };
+
+  //on image select
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setImage(e.target.files![0]);
+    console.log(e.target.files);
+  };
+  useEffect(() => {
+    if (!image) return;
+    console.log(URL.createObjectURL(image));
+  }, [image]);
+
+  //init refs
   useLayoutEffect(() => {
     submitRef.current = onSubmit;
     placeholderRef.current = placeholder;
     defaultValueRef.current = defaultValue;
     disabledRef.current = disabled;
   });
-
+  // create quill instance
   useEffect(() => {
     if (!containerRef.current) return;
     const container = containerRef.current;
     const editorContainer = container.appendChild(
       container.ownerDocument.createElement("div")
     );
-
+    //quill accepts config options
     const options: QuillOptions = {
       theme: "snow",
       placeholder: placeholderRef.current,
@@ -96,6 +118,7 @@ const Editor = ({
         },
       },
     };
+    //instantiate quill
     const quill = new Quill(editorContainer, options);
     quillRef.current = quill;
     quillRef.current.focus();
@@ -109,6 +132,7 @@ const Editor = ({
     quill.on(Quill.events.TEXT_CHANGE, () => {
       setText(quill.getText());
     });
+    //cleanup on unmount
     return () => {
       quill.off(Quill.events.TEXT_CHANGE);
       if (container) {
@@ -118,12 +142,45 @@ const Editor = ({
       if (innerRef?.current) innerRef.current = null;
     };
   }, [innerRef]);
+
+  //set edotor value is empty
   const isEmpty = text.replace(/<(.|\n)*?>/g, "").trim() === "";
 
   return (
     <div className="flex flex-col">
+      <input
+        type="file"
+        accept="image/*"
+        ref={imageElementRef}
+        className="hidden"
+        onChange={handleImageSelect}
+      />
+
       <div className="flex flex-col border border-slate-200 rounded-md overflow-hidden focus-within:shadow-sm focus-within:border-slate-300 transition bg-white">
         <div ref={containerRef} className="h-full ql-custom" />
+        {!!image && (
+          <div className="p-2">
+            <div className="relative size-[62px] flex items-center justify-center group/image">
+              <Hint label="Remove image">
+                <button
+                  className="hidden group-hover/image:flex rounded-full bg-black/70 hover:bg-black absolute -top-2.5 -right-2.5 text-white size-6 z-[4] border-2 border-white items-center justify-center"
+                  onClick={() => {
+                    setImage(null);
+                    imageElementRef.current!.value = "";
+                  }}
+                >
+                  <XIcon className="size-4" />
+                </button>
+              </Hint>
+              <Image
+                src={URL.createObjectURL(image)}
+                alt="upload"
+                fill
+                className="rounded-xl overflow-hidden border object-cover"
+              />
+            </div>
+          </div>
+        )}
         <div className="flex px-2 py-2 z-[5]">
           <Hint label={toolbarVisible ? "Hide toolbar" : "show toolbar"}>
             <Button
@@ -136,23 +193,18 @@ const Editor = ({
             </Button>
           </Hint>
 
-          <Hint label="Emoji">
-            <Button
-              disabled={disabled}
-              size="iconSm"
-              variant="ghost"
-              onClick={() => {}}
-            >
+          <EmojiPopover onEmojiSelect={onEmojiSelect}>
+            <Button disabled={disabled} size="iconSm" variant="ghost">
               <SmileIcon className="size-4" />
             </Button>
-          </Hint>
+          </EmojiPopover>
           {variant === "create" && (
             <Hint label="image">
               <Button
                 disabled={disabled}
                 size="iconSm"
                 variant="ghost"
-                onClick={() => {}}
+                onClick={() => imageElementRef.current?.click()}
               >
                 <ImageIcon className="size-4" />
               </Button>
