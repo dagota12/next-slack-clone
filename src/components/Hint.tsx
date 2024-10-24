@@ -9,14 +9,21 @@ import {
 interface HintProps {
   label: string;
   children: React.ReactNode;
-  align: "start" | "center" | "end";
-  side: "top" | "bottom" | "right" | "left";
+  align?: "start" | "center" | "end";
+  side?: "top" | "bottom" | "right" | "left";
+  asChild?: boolean;
 }
-export const Hint = ({ label, align, side, children }: HintProps) => {
+export const Hint = ({
+  label,
+  align = "center",
+  side = "top",
+  asChild = false,
+  children,
+}: HintProps) => {
   return (
     <TooltipProvider>
       <Tooltip delayDuration={150}>
-        <TooltipTrigger>{children}</TooltipTrigger>
+        <TooltipTrigger asChild>{children}</TooltipTrigger>
         <TooltipContent
           side={side}
           align={align}
