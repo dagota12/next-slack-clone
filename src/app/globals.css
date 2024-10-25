@@ -86,20 +86,20 @@ body {
     @apply bg-background text-foreground;
   }
 }
-.ql-toolbar{
+.ql-toolbar {
   border: none !important;
   background-color: #f8f8f8 !important;
 }
-.ql-toolbar .ql-formats:not(:last-child){
+.ql-toolbar .ql-formats:not(:last-child) {
   border-right: 1px solid #dcdcdc !important;
 }
-.ql-conatiner{
+.ql-conatiner {
   font-family: "Lato", sans-serif !important;
   border: none !important;
   height: unset !important;
 }
 
-.ql-editior{
+.ql-editior {
   line-height: 22px !important;
   padding: 8px 12px !important;
   color: #1d1c1d !important;
@@ -107,21 +107,25 @@ body {
   font-family: "Lato", sans-serif !important;
   font-size: 14px !important;
 }
-.ql-editor a{
+.ql-editor a {
   color: #1264a3 !important;
 }
-.ql-editor a:hover{
+.ql-editor a:hover {
   text-decoration: underline !important;
-} 
-.ql-renderer{
+}
+.ql-renderer {
   padding: 0 !important;
 }
-.ql-editor::before{
+.ql-editor::before {
   left: 12px !important;
   font-family: "Lato", sans-serif !important;
   font-style: normal !important;
   font-size: 14px !important;
   font-weight: 400 !important;
   @apply truncate;
-  
+}
+
+.messages-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #dcdcdc #f8f8f8;
 }
