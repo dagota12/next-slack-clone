@@ -15,6 +15,7 @@ import { Hint } from "./Hint";
 import { Delta, Op } from "quill/core";
 import { EmojiPopover } from "./EmojiPopover";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 type EditorValue = {
   image: File | null;
@@ -104,7 +105,15 @@ const Editor = ({
             enter: {
               key: "Enter",
               handler: () => {
-                return;
+                const text = quill.getText();
+                const addedImg = imageElementRef.current?.files?.[0] || null;
+                const isEmpty =
+                  !addedImg && text.replace(/<(.|\n)*?>/g, "").trim() === "";
+
+                if (isEmpty) return;
+
+                const body = JSON.stringify(quillRef.current?.getContents());
+                submitRef.current({ image: addedImg, body });
               },
             },
             shift_enter: {
@@ -144,7 +153,7 @@ const Editor = ({
   }, [innerRef]);
 
   //set edotor value is empty
-  const isEmpty = text.replace(/<(.|\n)*?>/g, "").trim() === "";
+  const isEmpty = !!image && text.replace(/<(.|\n)*?>/g, "").trim() === "";
 
   return (
     <div className="flex flex-col">
@@ -156,7 +165,12 @@ const Editor = ({
         onChange={handleImageSelect}
       />
 
-      <div className="flex flex-col border border-slate-200 rounded-md overflow-hidden focus-within:shadow-sm focus-within:border-slate-300 transition bg-white">
+      <div
+        className={cn(
+          "flex flex-col border border-slate-200 rounded-md overflow-hidden focus-within:shadow-sm focus-within:border-slate-300 transition bg-white",
+          disabled && "opacity-50"
+        )}
+      >
         <div ref={containerRef} className="h-full ql-custom" />
         {!!image && (
           <div className="p-2">
@@ -218,7 +232,7 @@ const Editor = ({
                 size="sm"
                 variant="outline"
                 className=""
-                onClick={() => {}}
+                onClick={onCancel}
               >
                 cancle
               </Button>
@@ -226,7 +240,12 @@ const Editor = ({
                 disabled={disabled || isEmpty}
                 size="sm"
                 className=" bg-[#007a5a] hover:bg-[#007a5a]/90 text-white"
-                onClick={() => {}}
+                onClick={() => {
+                  onSubmit({
+                    image,
+                    body: JSON.stringify(quillRef.current?.getContents()),
+                  });
+                }}
               >
                 save
               </Button>
@@ -239,7 +258,12 @@ const Editor = ({
               size="iconSm"
               variant="ghost"
               className="ml-auto bg-[#007a5a] hover:bg-[#007a5a]/90 text-white hover:text-white rounded-md"
-              onClick={() => {}}
+              onClick={() => {
+                onSubmit({
+                  image,
+                  body: JSON.stringify(quillRef.current?.getContents()),
+                });
+              }}
             >
               <MdSend className="size-4" />
             </Button>
