@@ -37,8 +37,9 @@ const ChannelPage = () => {
       <Header title={channel.name} />
       <MessagesList
         channelName={channel.name}
-        channelCreaationTime={channel._creationTime}
+        channelCreationTime={channel._creationTime}
         data={results}
+        variant="channel"
         loadMore={loadMore}
         isLoadingMore={status === "LoadingMore"}
         canLoadMore={status === "CanLoadMore"}

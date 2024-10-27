@@ -3,6 +3,8 @@ import { format, isToday, isYesterday } from "date-fns";
 import dynamic from "next/dynamic";
 import { Hint } from "./Hint";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Thumbnail } from "./Thumbnail";
+import { Toolbar } from "./Toolbar";
 const Renderer = dynamic(() => import("@/components/Renderer"), { ssr: false });
 
 const formatFullTime = (date: Date) => {
@@ -26,7 +28,7 @@ interface MessageProps {
   updatedAt: Doc<"messages">["updatedAt"];
   isEditing: boolean;
   isCompact?: boolean;
-  setEditingId: (id: Id<"members"> | null) => void;
+  setEditingId: (id: Id<"messages"> | null) => void;
   hideThreadButton?: boolean;
   threadCount?: number;
   threadImage?: string;
@@ -63,6 +65,7 @@ export const Message = ({
           </Hint>
           <div className="flex flex-col items-center">
             <Renderer value={body} />
+            <Thumbnail url={image} />
             {updatedAt ? (
               <span className="text-xs text-muted-foreground">(edited)</span>
             ) : null}
@@ -76,8 +79,8 @@ export const Message = ({
     <div className="flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative">
       <div className="flex items-start gap-2">
         <button>
-          <Avatar className="size-5 rounded-md mr-1">
-            <AvatarImage src={authorImage} className="rounded-md bg-black" />
+          <Avatar>
+            <AvatarImage src={authorImage} className=" bg-black" />
             <AvatarFallback className="bg-sky-500 text-white rounded-md text-xs">
               {avatarFallback}
             </AvatarFallback>
@@ -100,11 +103,23 @@ export const Message = ({
           </div>
 
           <Renderer value={body} />
+          <Thumbnail url={image} />
           {updatedAt ? (
             <span className="text-xs text-muted-foreground">(edited)</span>
           ) : null}
         </div>
       </div>
+      {!isEditing && (
+        <Toolbar
+          isAuthor={isAuthor}
+          isPending={false}
+          handleEdit={() => setEditingId(id)}
+          handleThread={() => {}}
+          handleDelete={() => {}}
+          handleReaction={() => {}}
+          hideThreadButton={hideThreadButton}
+        />
+      )}
     </div>
   );
 };
