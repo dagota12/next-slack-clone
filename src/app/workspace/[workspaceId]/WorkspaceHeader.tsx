@@ -3,17 +3,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Doc } from "../../../../convex/_generated/dataModel";
-import {
-  ChevronDownIcon,
-  FilterIcon,
-  ListFilter,
-  SquarePen,
-} from "lucide-react";
+import { ChevronDownIcon, ListFilter, SquarePen } from "lucide-react";
 import { Hint } from "@/components/Hint";
 import { PreferencesModal } from "./PreferencesModal";
 import { useState } from "react";

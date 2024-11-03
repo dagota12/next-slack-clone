@@ -71,7 +71,7 @@ export const PreferencesModal = ({
           toast.success("Workspace deleted");
           router.replace("/");
         },
-        onError: (err) => {
+        onError: () => {
           toast.error("faild to delete!");
         },
       }

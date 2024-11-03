@@ -15,17 +15,17 @@ import { useChannelId } from "@/hooks/useChannelId";
 const WorkspaceSidebar = () => {
   const channelId = useChannelId();
   const workspaceId = useWorkspaceId();
-  const [_open, setOpen] = useCreateChannelModal();
+  const [_open, setOpen] = useCreateChannelModal(); // eslint-disable-line @typescript-eslint/no-unused-vars
   const { data: member, loading: memberLoading } = useCurrentMember({
     workspaceId,
   });
   const { data: workspace, loading: workspaceLoading } = useGetWorkspace({
     id: workspaceId,
   });
-  const { data: channels, loading: channelsLoading } = useGetChannels({
+  const { data: channels } = useGetChannels({
     workspaceId,
   });
-  const { data: members, loading: membersLoading } = useGetMembers({
+  const { data: members } = useGetMembers({
     workspaceId,
   });
   if (memberLoading || workspaceLoading) {

@@ -4,7 +4,6 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -33,7 +32,7 @@ export const Header = ({ title }: HeaderProps) => {
   const [value, setValue] = useState(title);
   const [editOpen, setEditOpen] = useState(false);
 
-  const { data: member, loading: memberLoding } = useCurrentMember({
+  const { data: member } = useCurrentMember({
     workspaceId,
   });
   const { mutate: updateChannel, pending: isUpdatingChannel } =

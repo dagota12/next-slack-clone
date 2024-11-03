@@ -61,6 +61,7 @@ const Editor = ({
     }
   };
   //on emoji select
+  // eslint-disable-line @typescript-eslint/no-explicit-any
   const onEmojiSelect = (emoji: any) => {
     const quill = quillRef.current;
     quill?.insertText(quill?.getSelection()?.index || 0, emoji.native);

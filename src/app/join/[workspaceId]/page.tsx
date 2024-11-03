@@ -15,7 +15,7 @@ const JoinPage = () => {
   const router = useRouter();
   const workspaceId = useWorkspaceId();
   const { data, loading } = useGetWorkspaceInfo({ id: workspaceId });
-  const { mutate, pending } = useJoinWorkspace();
+  const { mutate } = useJoinWorkspace();
   const isMember = useMemo(() => data?.isMember, [data?.isMember]);
   useEffect(() => {
     if (isMember) {
@@ -26,11 +26,11 @@ const JoinPage = () => {
     mutate(
       { joinCode: code, workspaceId },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           toast.success("Joined workspace successfully!");
           router.replace(`/workspace/${workspaceId}`);
         },
-        onError: (err) => {
+        onError: () => {
           toast.error(
             data?.isMember ? `Already a member!` : `Failed to join workspace!`
           );

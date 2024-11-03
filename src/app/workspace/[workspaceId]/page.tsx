@@ -4,15 +4,10 @@ import { useGetChannels } from "@/features/channels/api/useGetChannels";
 import { useCreateChannelModal } from "@/features/channels/store/useCreateChannelModal";
 import { useGetWorkspace } from "@/features/workspaces/api/useGetWorkspace";
 import { useWorkspaceId } from "@/hooks/useWorkspaceId";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { AlertTriangleIcon, Loader } from "lucide-react";
 import { useCurrentMember } from "@/features/members/api/useCurentMember";
 
-interface WorkspaceProps {
-  params: {
-    id: string; //workspace id
-  };
-}
 const Workspaces = () => {
   const router = useRouter();
   const workspaceId = useWorkspaceId();

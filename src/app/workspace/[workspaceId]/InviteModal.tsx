@@ -6,17 +6,11 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { useNewJoinCode } from "@/features/workspaces/api/useNewJoinCode";
 import { useConfirm } from "@/hooks/useConfirm";
 import { useWorkspaceId } from "@/hooks/useWorkspaceId";
-import {
-  CopyIcon,
-  RefreshCcwDotIcon,
-  RefreshCcwIcon,
-  RefreshCwIcon,
-} from "lucide-react";
+import { CopyIcon, RefreshCcwIcon } from "lucide-react";
 import { toast } from "sonner";
 
 interface InviteModalProps {

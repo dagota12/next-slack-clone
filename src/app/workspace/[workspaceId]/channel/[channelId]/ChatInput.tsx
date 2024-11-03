@@ -68,7 +68,7 @@ export const ChatInput = ({ placehoder }: ChatInputProps) => {
       await createMessage(values, { throwError: true });
 
       setKey((prev) => prev + 1);
-    } catch (error) {
+    } catch {
       toast.error("Failed to send message");
     } finally {
       editorRef?.current?.enable();
